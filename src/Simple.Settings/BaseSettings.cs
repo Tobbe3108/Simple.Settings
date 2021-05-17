@@ -10,8 +10,8 @@ namespace Simple.Settings
 
     public abstract Task LoadAsync(string path, bool createIfNotExisting = true);
 
-    public abstract void Save();
+    public abstract void Save(bool createIfNotExisting = true);
 
-    public abstract Task SaveAsync();
+    public abstract Task SaveAsync(bool createIfNotExisting = true);
   }
 }
