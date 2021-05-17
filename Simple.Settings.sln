@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Settings", "src\Simp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Settings.Json", "src\Simple.Settings.Json\Simple.Settings.Json.csproj", "{FF6E619B-D0E5-4B5E-A456-D192E5CA3B4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "src\Benchmark\Benchmark.csproj", "{3189B341-7031-4DC2-8C70-D45194B96DEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,7 @@ Global
 		{0CCB0F98-10A1-46CD-B6B3-FA1019C3F43D} = {64EC8E58-0B04-4EEB-AAF5-7F76DF62C566}
 		{E2AABCA9-36F5-4D2C-9FD8-0D89EC4E02F8} = {64EC8E58-0B04-4EEB-AAF5-7F76DF62C566}
 		{FF6E619B-D0E5-4B5E-A456-D192E5CA3B4A} = {64EC8E58-0B04-4EEB-AAF5-7F76DF62C566}
+		{3189B341-7031-4DC2-8C70-D45194B96DEB} = {64EC8E58-0B04-4EEB-AAF5-7F76DF62C566}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0CCB0F98-10A1-46CD-B6B3-FA1019C3F43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -33,5 +36,9 @@ Global
 		{FF6E619B-D0E5-4B5E-A456-D192E5CA3B4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF6E619B-D0E5-4B5E-A456-D192E5CA3B4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF6E619B-D0E5-4B5E-A456-D192E5CA3B4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3189B341-7031-4DC2-8C70-D45194B96DEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3189B341-7031-4DC2-8C70-D45194B96DEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3189B341-7031-4DC2-8C70-D45194B96DEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3189B341-7031-4DC2-8C70-D45194B96DEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
