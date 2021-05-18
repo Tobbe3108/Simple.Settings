@@ -21,7 +21,7 @@ namespace Sample
       var value = setting.SomeString;
       var complexValue = setting.SomeComplexObject;
       var list = setting.SomeComplexObjectList;
-
+      
       //Change settings
       setting.SomeString = "Some other value";
       setting.SomeComplexObject = new ComplexObject
@@ -35,7 +35,7 @@ namespace Sample
           SomeBool = false
         }
       };
-
+      
       // Save settings
       setting.Save();
       await setting.SaveAsync();
