@@ -8,7 +8,7 @@ namespace Simple.Settings.Json
     public override void Load(string path)
     {
       FileInfo = new FileInfo(path);
-      if (FileInfo.Length == 0)
+      if (!FileInfo.Exists || FileInfo.Length == 0)
       {
         return;
       }

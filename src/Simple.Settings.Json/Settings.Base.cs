@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
@@ -9,8 +8,6 @@ namespace Simple.Settings.Json
 {
   public abstract partial class Settings : BaseSettings
   {
-    [JsonIgnore] public override FileInfo FileInfo { get; protected set; }
-
     // ReSharper disable once MemberCanBePrivate.Global
     // ReSharper disable once FieldCanBeMadeReadOnly.Global
     [JsonIgnore] public JsonSerializerOptions JsonSerializerOptions = new()

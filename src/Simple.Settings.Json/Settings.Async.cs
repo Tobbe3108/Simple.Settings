@@ -9,7 +9,7 @@ namespace Simple.Settings.Json
     public override async Task LoadAsync(string path)
     {
       FileInfo = new FileInfo(path);
-      if (FileInfo.Length == 0)
+      if (!FileInfo.Exists || FileInfo.Length == 0)
       {
         return;
       }
@@ -21,7 +21,7 @@ namespace Simple.Settings.Json
     
     public override async Task SaveAsync()
     {
-      using var fileStream = new FileStream(FileInfo.Name, FileMode.OpenOrCreate);
+      using var fileStream = new FileStream(FileInfo.Name, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
       await JsonSerializer.SerializeAsync(fileStream, this, GetType(), JsonSerializerOptions);
     }
   }
