@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Sample.Models;
+using Simple.Settings;
 
 namespace Sample
 {
@@ -11,10 +12,17 @@ namespace Sample
 
     static async Task Main(string[] args)
     {
-      var setting = new SampleSettings();
-      
+      var setting = new SampleSettings().WithConfiguration(configuration =>
+      {
+        configuration.SaveOnPropertyChanged = new SaveOnPropertyChanged
+        {
+          Enabled = false,
+          Type = SaveOnPropertyChanged.SaveType.Async
+        };
+      });
+
       // Load settings
-      setting.Load(Path);
+      //setting.Load(Path);
       await setting.LoadAsync(Path);
       
       // Read settings
@@ -37,7 +45,7 @@ namespace Sample
       };
       
       // Save settings
-      setting.Save();
+      //setting.Save();
       await setting.SaveAsync();
     }
   }
