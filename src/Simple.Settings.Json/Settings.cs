@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.Json;
+using Simple.Settings.Json.Configuration;
 
 namespace Simple.Settings.Json
 {
@@ -14,13 +15,13 @@ namespace Simple.Settings.Json
       }
 
       var json = File.ReadAllText(FileInfo.Name);
-      var source = JsonSerializer.Deserialize(json, GetType(), JsonSerializerOptions);
+      var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
       CopyValues(this, source);
     }
     
     public override void Save()
     {
-      var json = JsonSerializer.Serialize(this, GetType(), JsonSerializerOptions);
+      var json = JsonSerializer.Serialize(this, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
       File.WriteAllText(FileInfo.Name, json);
     }
   }

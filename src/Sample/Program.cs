@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Sample.Models;
-using Simple.Settings;
+using Simple.Settings.Configuration;
+using Simple.Settings.Json.Configuration;
 
 namespace Sample
 {
@@ -19,7 +21,13 @@ namespace Sample
           Enabled = false,
           Type = SaveOnPropertyChanged.SaveType.Async
         };
+        configuration.JsonSerializerOptions = new JsonSerializerOptions
+        {
+          WriteIndented = true
+        };
       });
+
+      //var setting = new SampleSettings();
 
       // Load settings
       //setting.Load(Path);
@@ -29,7 +37,7 @@ namespace Sample
       var value = setting.SomeString;
       var complexValue = setting.SomeComplexObject;
       var list = setting.SomeComplexObjectList;
-      
+
       //Change settings
       setting.SomeString = "Some other value";
       setting.SomeComplexObject = new ComplexObject

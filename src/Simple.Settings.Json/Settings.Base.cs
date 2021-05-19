@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Simple.Settings.Json.Configuration;
 
 namespace Simple.Settings.Json
 {
   public abstract partial class Settings : BaseSettings
   {
-    // ReSharper disable once MemberCanBePrivate.Global
-    // ReSharper disable once FieldCanBeMadeReadOnly.Global
-    [JsonIgnore] public JsonSerializerOptions JsonSerializerOptions = new()
+    protected Settings()
     {
-      WriteIndented = true
-    };
+      Configuration = new SimpleSettingsJsonConfiguration();
+    }
     
     private static void CopyValues<T>(T target, T source)
     {

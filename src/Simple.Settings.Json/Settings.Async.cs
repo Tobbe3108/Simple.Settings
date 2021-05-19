@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Simple.Settings.Json.Configuration;
 
 namespace Simple.Settings.Json
 {
@@ -22,7 +23,7 @@ namespace Simple.Settings.Json
     public override async Task SaveAsync()
     {
       using var fileStream = new FileStream(FileInfo.Name, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
-      await JsonSerializer.SerializeAsync(fileStream, this, GetType(), JsonSerializerOptions);
+      await JsonSerializer.SerializeAsync(fileStream, this, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
     }
   }
 }
