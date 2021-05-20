@@ -8,5 +8,6 @@ namespace Simple.Settings.Configuration
   public interface ISimpleSettingsConfiguration
   {
     public SaveOnPropertyChanged SaveOnPropertyChanged { get; set; }
+    public object EncryptionOptions { get; set; }
   }
 }

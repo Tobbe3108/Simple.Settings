@@ -11,5 +11,6 @@ namespace Simple.Settings.Json.Configuration
     };
 
     public SaveOnPropertyChanged SaveOnPropertyChanged { get; set; } = new();
+    public object EncryptionOptions { get; set; } = new();
   }
 }
