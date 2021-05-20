@@ -36,7 +36,7 @@ namespace Simple.Settings
     [NotifyPropertyChangedInvocator]
     protected async Task OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-      if (Configuration?.SaveOnPropertyChanged is {Enabled: true})
+      if (Configuration?.SaveOnPropertyChanged is not null)
       {
         switch (Configuration.SaveOnPropertyChanged.Type)
         {

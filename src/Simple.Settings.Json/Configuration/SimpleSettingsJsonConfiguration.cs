@@ -10,7 +10,7 @@ namespace Simple.Settings.Json.Configuration
       WriteIndented = true
     };
 
-    public SaveOnPropertyChanged SaveOnPropertyChanged { get; set; } = new();
-    public object EncryptionOptions { get; set; } = new();
+    public SaveOnPropertyChanged? SaveOnPropertyChanged { get; set; }
+    public EncryptionOptions? EncryptionOptions { get; set; }
   }
 }
