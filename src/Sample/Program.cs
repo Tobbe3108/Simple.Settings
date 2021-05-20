@@ -18,16 +18,19 @@ namespace Sample
       {
         configuration.SaveOnPropertyChanged = new SaveOnPropertyChanged
         {
-          Enabled = false,
           Type = SaveOnPropertyChanged.SaveType.Async
         };
         configuration.JsonSerializerOptions = new JsonSerializerOptions
         {
           WriteIndented = true
         };
+        configuration.EncryptionOptions = new EncryptionOptions
+        {
+          EncryptionKey = "StrongEncryptionKey"
+        };
       });
 
-      //var setting = new SampleSettings();
+      // var setting = new SampleSettings();
 
       // Load settings
       //setting.Load(Path);

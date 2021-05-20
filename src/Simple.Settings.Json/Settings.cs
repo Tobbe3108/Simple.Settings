@@ -1,28 +1,35 @@
-﻿using System.IO;
-using System.Text.Json;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using Simple.Settings.Json.Configuration;
 
 namespace Simple.Settings.Json
 {
-  public abstract partial class Settings
+  public abstract partial class Settings : BaseSettings
   {
-    public override void Load(string path)
+    protected Settings()
     {
-      FileInfo = new FileInfo(path);
-      if (!FileInfo.Exists || FileInfo.Length == 0)
-      {
-        return;
-      }
-
-      var json = File.ReadAllText(FileInfo.Name);
-      var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-      CopyValues(this, source);
+      Configuration = new SimpleSettingsJsonConfiguration();
     }
     
-    public override void Save()
+    private static void CopyValues<T>(T target, T source)
     {
-      var json = JsonSerializer.Serialize(this, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-      File.WriteAllText(FileInfo.Name, json);
+      var properties = target?.GetType().GetProperties(
+        BindingFlags.Instance | BindingFlags.Public).Where(prop =>
+        prop.CanRead
+        && prop.CanWrite
+        && prop.GetIndexParameters().Length == 0);
+
+      foreach (var prop in properties ?? Array.Empty<PropertyInfo>())
+      {
+        if (prop.Name == nameof(FileInfo))
+        {
+          continue;
+        }
+
+        var value = prop.GetValue(source, null);
+        prop.SetValue(target, value, null);
+      }
     }
   }
 }
