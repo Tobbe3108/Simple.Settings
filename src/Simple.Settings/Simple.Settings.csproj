@@ -4,6 +4,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
+        <PackageVersion>0.0.1-alpha</PackageVersion>
+        <Title>Simple.Settings</Title>
+        <Authors>Tobbe3108</Authors>
     </PropertyGroup>
 
 </Project>
