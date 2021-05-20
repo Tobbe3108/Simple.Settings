@@ -30,7 +30,7 @@ namespace Sample
         };
       });
 
-      //var setting = new SampleSettings();
+      // var setting = new SampleSettings();
 
       // Load settings
       //setting.Load(Path);
