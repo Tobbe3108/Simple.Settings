@@ -22,9 +22,14 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
       
-    - name: Publish NuGet on version change
-      id: publish_nuget
+    - name: Publish Simple.Settings NuGet on version change
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
         PROJECT_FILE_PATH: src/Simple.Settings/Simple.Settings.csproj
+        NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+        
+    - name: Publish Simple.Settings.Json NuGet on version change
+      uses: brandedoutcast/publish-nuget@v2.5.5
+      with:
+        PROJECT_FILE_PATH: src/Simple.Settings/Simple.Settings.Json.csproj
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
