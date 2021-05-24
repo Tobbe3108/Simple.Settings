@@ -10,6 +10,8 @@ namespace Simple.Settings.Json
   {
     public override async Task LoadAsync(string path)
     {
+      OnBeforeLoad();
+      
       object? source = null;
 
       FileInfo = new FileInfo(path);
@@ -20,6 +22,8 @@ namespace Simple.Settings.Json
 
       if (Configuration.EncryptionOptions is not null)
       {
+        OnBeforeDecrypt();
+        
         var (stream,s1,a2) = await EncryptionHelper.DecryptAsync(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
         source = await JsonSerializer.DeserializeAsync(stream , GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
 
@@ -29,6 +33,8 @@ namespace Simple.Settings.Json
         s1.Dispose();
         a2.Clear();
         a2.Dispose();
+        
+        OnAfterDecrypt();
       }
 
       if (source is null)
@@ -38,12 +44,18 @@ namespace Simple.Settings.Json
       }
 
       await Task.Run(() => CopyValues(this, source));
+      
+      OnAfterLoad();
     }
 
     public override async Task SaveAsync()
     {
+      OnBeforeSave();
+      
       if (Configuration.EncryptionOptions is not null)
       {
+        OnBeforeEncrypt();
+        
         var (stream,s1,a2) = await EncryptionHelper.EncryptAsync(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
         await JsonSerializer.SerializeAsync(stream, this, GetType(),
           ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
@@ -55,12 +67,17 @@ namespace Simple.Settings.Json
         a2.Clear();
         a2.Dispose();
         
+        OnAfterEncrypt();
+        OnAfterSave();
+        
         return;
       }
       
       using var fileStream = new FileStream(FileInfo.Name, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
       await JsonSerializer.SerializeAsync(fileStream, this, GetType(),
         ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
+      
+      OnAfterSave();
     }
   }
 }

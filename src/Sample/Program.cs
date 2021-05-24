@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -31,10 +32,54 @@ namespace Sample
       });
 
       // var setting = new SampleSettings();
+      
+      #region Events
+
+      setting.BeforeLoad += () =>
+      {
+        Console.WriteLine("before load");
+      };
+
+      setting.BeforeEncrypt += () =>
+      {
+        Console.WriteLine("before encrypt");
+      };
+
+      setting.BeforeDecrypt += () =>
+      {
+        Console.WriteLine("before decrypt");
+      };
+
+      setting.BeforeSave += () =>
+      {
+        Console.WriteLine("before save");
+      };
+
+      setting.AfterLoad += () =>
+      {
+        Console.WriteLine("after load");
+      };
+
+      setting.AfterEncrypt += () =>
+      {
+        Console.WriteLine("after encrypt");
+      };
+
+      setting.AfterDecrypt += () =>
+      {
+        Console.WriteLine("after decrypt");
+      };
+
+      setting.AfterSave += () =>
+      {
+        Console.WriteLine("after save");
+      };
+
+      #endregion
 
       // Load settings
-      //setting.Load(Path);
-      await setting.LoadAsync(Path);
+      setting.Load(Path);
+      //await setting.LoadAsync(Path);
       
       // Read settings
       var value = setting.SomeString;
@@ -56,8 +101,8 @@ namespace Sample
       };
       
       // Save settings
-      //setting.Save();
-      await setting.SaveAsync();
+      setting.Save();
+      //await setting.SaveAsync();
     }
   }
 }
