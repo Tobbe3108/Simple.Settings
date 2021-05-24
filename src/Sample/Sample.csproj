@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Simple.Settings.Json\Simple.Settings.Json.csproj" />
-      <ProjectReference Include="..\Simple.Settings.Xml\Simple.Settings.Xml.csproj" />
     </ItemGroup>
 
 </Project>
