@@ -10,7 +10,7 @@ namespace Simple.Settings.Helpers
 
     public static void Encrypt(this string toWrite, string? privateKey, FileInfo fileInfo)
     {
-      using FileStream fileStream = new(fileInfo.Name, FileMode.OpenOrCreate);
+      using FileStream fileStream = new(fileInfo.FullName, FileMode.OpenOrCreate);
       using Aes aes = Aes.Create();
       aes.Key = CreateKey(privateKey);
       byte[] iv = aes.IV;
@@ -25,7 +25,7 @@ namespace Simple.Settings.Helpers
 
     public static string Decrypt(string? privateKey, FileInfo fileInfo)
     {
-      using FileStream fileStream = new(fileInfo.Name, FileMode.Open);
+      using FileStream fileStream = new(fileInfo.FullName, FileMode.Open);
       using Aes aes = Aes.Create();
       byte[] iv = new byte[aes.IV.Length];
       var numBytesToRead = aes.IV.Length;
@@ -49,7 +49,7 @@ namespace Simple.Settings.Helpers
 
     public static async Task<(Stream, Stream, Aes)> EncryptAsync(string? privateKey, FileInfo fileInfo)
     {
-      FileStream fileStream = new(fileInfo.Name, FileMode.OpenOrCreate);
+      FileStream fileStream = new(fileInfo.FullName, FileMode.OpenOrCreate);
       Aes aes = Aes.Create();
       aes.Key = CreateKey(privateKey);
       byte[] iv = aes.IV;
@@ -63,7 +63,7 @@ namespace Simple.Settings.Helpers
 
     public static async Task<(Stream, Stream, Aes)> DecryptAsync(string? privateKey, FileInfo fileInfo)
     {
-      FileStream fileStream = new(fileInfo.Name, FileMode.Open);
+      FileStream fileStream = new(fileInfo.FullName, FileMode.Open);
       Aes aes = Aes.Create();
       byte[] iv = new byte[aes.IV.Length];
       var numBytesToRead = aes.IV.Length;

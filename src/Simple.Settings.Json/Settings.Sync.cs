@@ -30,7 +30,7 @@ namespace Simple.Settings.Json
 
       if (string.IsNullOrEmpty(json))
       {
-        json = File.ReadAllText(FileInfo.Name);
+        json = File.ReadAllText(FileInfo.FullName);
       }
       var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
       CopyValues(this, source);
@@ -56,7 +56,7 @@ namespace Simple.Settings.Json
         return;
       }
       
-      File.WriteAllText(FileInfo.Name, json);
+      File.WriteAllText(FileInfo.FullName, json);
       
       OnAfterSave();
     }

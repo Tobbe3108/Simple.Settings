@@ -39,7 +39,7 @@ namespace Simple.Settings.Json
 
       if (source is null)
       {
-        using var stream = new FileStream(FileInfo.Name, FileMode.OpenOrCreate);
+        using var stream = new FileStream(FileInfo.FullName, FileMode.OpenOrCreate);
         source = await JsonSerializer.DeserializeAsync(stream, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
       }
 
@@ -73,7 +73,7 @@ namespace Simple.Settings.Json
         return;
       }
       
-      using var fileStream = new FileStream(FileInfo.Name, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
+      using var fileStream = new FileStream(FileInfo.FullName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write);
       await JsonSerializer.SerializeAsync(fileStream, this, GetType(),
         ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
       
