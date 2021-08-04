@@ -26,6 +26,8 @@ namespace Simple.Settings
     public abstract Task LoadAsync(string path);
     public abstract void Save();
     public abstract Task SaveAsync();
+    public abstract void Reload();
+    public abstract Task ReloadAsync();
     
     #endregion
 
@@ -99,6 +101,28 @@ namespace Simple.Settings
     protected virtual void OnAfterSave()
     {
       AfterSave?.Invoke();
+    }
+
+    #endregion
+    
+    #region Reload
+
+    public delegate void BeforeReloadHandler();
+
+    public event BeforeReloadHandler BeforeReload;
+
+    protected virtual void OnBeforeReload()
+    {
+      BeforeReload?.Invoke();
+    }
+    
+    public delegate void AfterReloadHandler();
+
+    public event AfterReloadHandler AfterReload;
+
+    protected virtual void OnAfterReload()
+    {
+      AfterReload?.Invoke();
     }
 
     #endregion

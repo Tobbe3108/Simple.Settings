@@ -9,33 +9,8 @@ namespace Simple.Settings.Json
   {
     public override void Load(string path)
     {
-      OnBeforeLoad();
-      
-      var json = string.Empty;
-      
       FileInfo = new FileInfo(path);
-      if (!FileInfo.Exists || FileInfo.Length == 0)
-      {
-        return;
-      }
-
-      if (Configuration.EncryptionOptions is not null)
-      {
-        OnBeforeDecrypt();
-        
-        json = EncryptionHelper.Decrypt(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
-        
-        OnAfterDecrypt();
-      }
-
-      if (string.IsNullOrEmpty(json))
-      {
-        json = File.ReadAllText(FileInfo.FullName);
-      }
-      var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-      CopyValues(this, source);
-      
-      OnAfterLoad();
+      Load();
     }
     
     public override void Save()
@@ -59,6 +34,38 @@ namespace Simple.Settings.Json
       File.WriteAllText(FileInfo.FullName, json);
       
       OnAfterSave();
+    }
+
+    public override void Reload() => Load();
+
+    private void Load()
+    {
+      OnBeforeLoad();
+      
+      var json = string.Empty;
+
+      if (!FileInfo.Exists || FileInfo.Length == 0)
+      {
+        return;
+      }
+
+      if (Configuration.EncryptionOptions is not null)
+      {
+        OnBeforeDecrypt();
+        
+        json = EncryptionHelper.Decrypt(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
+        
+        OnAfterDecrypt();
+      }
+
+      if (string.IsNullOrEmpty(json))
+      {
+        json = File.ReadAllText(FileInfo.FullName);
+      }
+      var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
+      CopyValues(this, source);
+      
+      OnAfterLoad();
     }
   }
 }

@@ -86,8 +86,13 @@ namespace Sample
       var complexValue = setting.SomeComplexObject;
       var list = setting.SomeComplexObjectList;
 
+      
       //Change settings
       setting.SomeString = "Some other value";
+      
+      //Reload settings
+      setting.Reload();
+      
       setting.SomeComplexObject = new ComplexObject
       {
         SomeBool = false

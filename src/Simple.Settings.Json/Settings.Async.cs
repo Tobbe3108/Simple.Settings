@@ -10,42 +10,8 @@ namespace Simple.Settings.Json
   {
     public override async Task LoadAsync(string path)
     {
-      OnBeforeLoad();
-      
-      object? source = null;
-
       FileInfo = new FileInfo(path);
-      if (!FileInfo.Exists || FileInfo.Length == 0)
-      {
-        return;
-      }
-
-      if (Configuration.EncryptionOptions is not null)
-      {
-        OnBeforeDecrypt();
-        
-        var (stream,s1,a2) = await EncryptionHelper.DecryptAsync(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
-        source = await JsonSerializer.DeserializeAsync(stream , GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-
-        stream.Close();
-        stream.Dispose();
-        s1.Close();
-        s1.Dispose();
-        a2.Clear();
-        a2.Dispose();
-        
-        OnAfterDecrypt();
-      }
-
-      if (source is null)
-      {
-        using var stream = new FileStream(FileInfo.FullName, FileMode.OpenOrCreate);
-        source = await JsonSerializer.DeserializeAsync(stream, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-      }
-
-      await Task.Run(() => CopyValues(this, source));
-      
-      OnAfterLoad();
+      await LoadAsync();
     }
 
     public override async Task SaveAsync()
@@ -78,6 +44,47 @@ namespace Simple.Settings.Json
         ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
       
       OnAfterSave();
+    }
+    
+    public override async Task ReloadAsync() => await LoadAsync();
+    
+    private async Task LoadAsync()
+    {
+      OnBeforeLoad();
+      
+      object? source = null;
+      
+      if (!FileInfo.Exists || FileInfo.Length == 0)
+      {
+        return;
+      }
+
+      if (Configuration.EncryptionOptions is not null)
+      {
+        OnBeforeDecrypt();
+        
+        var (stream,s1,a2) = await EncryptionHelper.DecryptAsync(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
+        source = await JsonSerializer.DeserializeAsync(stream , GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
+
+        stream.Close();
+        stream.Dispose();
+        s1.Close();
+        s1.Dispose();
+        a2.Clear();
+        a2.Dispose();
+        
+        OnAfterDecrypt();
+      }
+
+      if (source is null)
+      {
+        using var stream = new FileStream(FileInfo.FullName, FileMode.OpenOrCreate);
+        source = await JsonSerializer.DeserializeAsync(stream, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
+      }
+
+      await Task.Run(() => CopyValues(this, source));
+      
+      OnAfterLoad();
     }
   }
 }
