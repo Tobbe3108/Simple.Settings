@@ -8,9 +8,9 @@ namespace Simple.Settings.Helpers
   {
     private static readonly byte[] Salt = {10, 20, 30, 40, 50, 60, 70, 80};
 
-    public static void Encrypt(this string toWrite, string? privateKey, FileInfo fileInfo)
+    public static void Encrypt(this string toWrite, string? privateKey, string path)
     {
-      using FileStream fileStream = new(fileInfo.FullName, FileMode.OpenOrCreate);
+      using FileStream fileStream = new(path, FileMode.OpenOrCreate);
       using Aes aes = Aes.Create();
       aes.Key = CreateKey(privateKey);
       byte[] iv = aes.IV;
@@ -23,9 +23,9 @@ namespace Simple.Settings.Helpers
       encryptWriter.Write(toWrite);
     }
 
-    public static string Decrypt(string? privateKey, FileInfo fileInfo)
+    public static string Decrypt(string? privateKey, string path)
     {
-      using FileStream fileStream = new(fileInfo.FullName, FileMode.Open);
+      using FileStream fileStream = new(path, FileMode.Open);
       using Aes aes = Aes.Create();
       byte[] iv = new byte[aes.IV.Length];
       var numBytesToRead = aes.IV.Length;
@@ -47,9 +47,8 @@ namespace Simple.Settings.Helpers
       return decryptReader.ReadToEnd();
     }
 
-    public static async Task<(Stream, Stream, Aes)> EncryptAsync(string? privateKey, FileInfo fileInfo)
+    public static async Task<(Stream, Stream, Aes)> EncryptAsync(string? privateKey, FileStream? fileStream)
     {
-      FileStream fileStream = new(fileInfo.FullName, FileMode.OpenOrCreate);
       Aes aes = Aes.Create();
       aes.Key = CreateKey(privateKey);
       byte[] iv = aes.IV;
@@ -61,9 +60,8 @@ namespace Simple.Settings.Helpers
       return (cryptoStream, fileStream, aes);
     }
 
-    public static async Task<(Stream, Stream, Aes)> DecryptAsync(string? privateKey, FileInfo fileInfo)
+    public static async Task<(Stream, Stream, Aes)> DecryptAsync(string? privateKey, FileStream? fileStream)
     {
-      FileStream fileStream = new(fileInfo.FullName, FileMode.Open);
       Aes aes = Aes.Create();
       byte[] iv = new byte[aes.IV.Length];
       var numBytesToRead = aes.IV.Length;

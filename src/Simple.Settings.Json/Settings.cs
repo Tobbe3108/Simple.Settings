@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Simple.Settings.Json.Configuration;
@@ -7,6 +8,8 @@ namespace Simple.Settings.Json
 {
   public abstract partial class Settings : BaseSettings
   {
+    protected internal FileInfo FileInfo = null!;
+    
     protected Settings()
     {
       Configuration = new SimpleSettingsJsonConfiguration();

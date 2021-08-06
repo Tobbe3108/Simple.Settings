@@ -1,9 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
+﻿using System.IO;
 using System.Threading.Tasks;
-using Simple.Settings.Annotations;
 using Simple.Settings.Configuration;
 
 // ReSharper disable UnusedMemberInSuper.Global
@@ -11,54 +7,25 @@ using Simple.Settings.Configuration;
 
 namespace Simple.Settings
 {
-  public abstract class BaseSettings : INotifyPropertyChanged
+  public abstract class BaseSettings
   {
     #region Fields
     
-    protected internal FileInfo FileInfo = null!;
     public ISimpleSettingsConfiguration Configuration = null!;
     
     #endregion
     
     #region Methods
-    
-    public abstract void Load(string path);
-    public abstract Task LoadAsync(string path);
-    public abstract void Save();
-    public abstract Task SaveAsync();
-    public abstract void Reload();
-    public abstract Task ReloadAsync();
+
+    protected abstract void InternalLoad(string path);
+    protected abstract Task InternalLoadAsync(Stream jsonStream);
+    protected abstract void InternalSave(string path);
+    protected abstract Task InternalSaveAsync(Stream jsonStream);
+    protected abstract void InternalReload(string path);
+    protected abstract Task InternalReloadAsync(Stream jsonStream);
     
     #endregion
-
-    #region PropertyChanged
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    [NotifyPropertyChangedInvocator]
-    protected async Task OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-      if (Configuration?.SaveOnPropertyChanged is not null)
-      {
-        switch (Configuration.SaveOnPropertyChanged.Type)
-        {
-          case SaveOnPropertyChanged.SaveType.Async:
-            await SaveAsync();
-            break;
-          case SaveOnPropertyChanged.SaveType.Sync:
-            // ReSharper disable once MethodHasAsyncOverload
-            Save();
-            break;
-          default:
-            throw new ArgumentOutOfRangeException();
-        }
-      }
     
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    #endregion
-
     #region Events
 
     #region Load

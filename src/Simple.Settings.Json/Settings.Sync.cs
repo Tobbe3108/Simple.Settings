@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.Json;
+using Simple.Settings.Annotations;
 using Simple.Settings.Helpers;
 using Simple.Settings.Json.Configuration;
 
@@ -7,13 +9,36 @@ namespace Simple.Settings.Json
 {
   public abstract partial class Settings
   {
-    public override void Load(string path)
+    public void Load([NotNull] string path)
     {
+      if (path == null) throw new ArgumentNullException(nameof(path));
       FileInfo = new FileInfo(path);
-      Load();
+      if (!FileInfo.Exists || FileInfo.Length == 0)
+      {
+        return;
+      }
+
+      InternalLoad(FileInfo.FullName);
     }
-    
-    public override void Save()
+
+    public void Reload()
+    {
+      if (FileInfo == null) throw new ArgumentNullException(nameof(FileInfo));
+      if (!FileInfo.Exists || FileInfo.Length == 0)
+      {
+        return;
+      }
+      
+      InternalLoad(FileInfo.FullName);
+    }
+
+    public void Save()
+    {
+      if (FileInfo == null) throw new ArgumentNullException(nameof(FileInfo));
+      InternalSave(FileInfo.FullName);
+    }
+
+    protected override void InternalSave(string path)
     {
       OnBeforeSave();
       
@@ -23,7 +48,7 @@ namespace Simple.Settings.Json
       {
         OnBeforeEncrypt();
         
-        json.Encrypt(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
+        json.Encrypt(Configuration.EncryptionOptions.EncryptionKey, path);
         
         OnAfterEncrypt();
         OnAfterSave();
@@ -31,36 +56,31 @@ namespace Simple.Settings.Json
         return;
       }
       
-      File.WriteAllText(FileInfo.FullName, json);
+      File.WriteAllText(path, json);
       
       OnAfterSave();
     }
 
-    public override void Reload() => Load();
+    protected override void InternalReload(string path) => Load(path);
 
-    private void Load()
+    protected override void InternalLoad(string path)
     {
       OnBeforeLoad();
       
       var json = string.Empty;
-
-      if (!FileInfo.Exists || FileInfo.Length == 0)
-      {
-        return;
-      }
-
+      
       if (Configuration.EncryptionOptions is not null)
       {
         OnBeforeDecrypt();
         
-        json = EncryptionHelper.Decrypt(Configuration.EncryptionOptions.EncryptionKey, FileInfo);
+        json = EncryptionHelper.Decrypt(Configuration.EncryptionOptions.EncryptionKey, path);
         
         OnAfterDecrypt();
       }
 
       if (string.IsNullOrEmpty(json))
       {
-        json = File.ReadAllText(FileInfo.FullName);
+        json = File.ReadAllText(path);
       }
       var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
       CopyValues(this, source);

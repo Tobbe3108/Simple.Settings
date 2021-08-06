@@ -17,10 +17,6 @@ namespace Sample
     {
       var setting = new SampleSettings().WithConfiguration(configuration =>
       {
-        configuration.SaveOnPropertyChanged = new SaveOnPropertyChanged
-        {
-          Type = SaveOnPropertyChanged.SaveType.Async
-        };
         configuration.JsonSerializerOptions = new JsonSerializerOptions
         {
           WriteIndented = true
@@ -31,7 +27,7 @@ namespace Sample
         };
       });
 
-      // var setting = new SampleSettings();
+      //var setting = new SampleSettings();
       
       #region Events
 
@@ -78,9 +74,9 @@ namespace Sample
       #endregion
 
       // Load settings
-      setting.Load(Path);
-      //await setting.LoadAsync(Path);
-      
+      //setting.Load(Path);
+      await setting.LoadAsync(Path);
+
       // Read settings
       var value = setting.SomeString;
       var complexValue = setting.SomeComplexObject;
@@ -91,7 +87,8 @@ namespace Sample
       setting.SomeString = "Some other value";
       
       //Reload settings
-      setting.Reload();
+      //setting.Reload();
+      await setting.ReloadAsync();
       
       setting.SomeComplexObject = new ComplexObject
       {
@@ -106,8 +103,8 @@ namespace Sample
       };
       
       // Save settings
-      setting.Save();
-      //await setting.SaveAsync();
+      //setting.Save();
+      await setting.SaveAsync();
     }
   }
 }
