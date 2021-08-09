@@ -25,12 +25,8 @@ namespace Simple.Settings.Json
 
       foreach (var prop in properties ?? Array.Empty<PropertyInfo>())
       {
-        if (prop.Name == nameof(FileInfo))
-        {
-          continue;
-        }
-
         var value = prop.GetValue(source, null);
+        if (value is null) continue;
         prop.SetValue(target, value, null);
       }
     }
