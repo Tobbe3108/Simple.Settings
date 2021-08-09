@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Text.Json;
+using Newtonsoft.Json;
 using Simple.Settings.Annotations;
 using Simple.Settings.Helpers;
 using Simple.Settings.Json.Configuration;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Simple.Settings.Json
 {
@@ -82,8 +83,8 @@ namespace Simple.Settings.Json
       {
         json = File.ReadAllText(path);
       }
-      var source = JsonSerializer.Deserialize(json, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-      CopyValues(this, source);
+     
+      JsonConvert.PopulateObject(json, this);
       
       OnAfterLoad();
     }

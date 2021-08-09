@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>9</LangVersion>
         <Nullable>enable</Nullable>
-        <Version>0.0.6</Version>
+        <Version>0.0.7</Version>
         <Title>Simple.Settings.Json</Title>
         <Authors>Tobbe3108</Authors>
     </PropertyGroup>
@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="System.Text.Json" Version="5.0.2" />
     </ItemGroup>
 

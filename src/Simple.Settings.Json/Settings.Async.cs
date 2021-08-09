@@ -1,8 +1,9 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using System.Text.Json;
+using Newtonsoft.Json;
 using Simple.Settings.Helpers;
 using Simple.Settings.Json.Configuration;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Simple.Settings.Json
 {
@@ -41,7 +42,7 @@ namespace Simple.Settings.Json
     {
       OnBeforeLoad();
 
-      object? source = null;
+      string? json = null;
 
       if (Configuration.EncryptionOptions is not null)
       {
@@ -49,8 +50,8 @@ namespace Simple.Settings.Json
 
         var (stream, s1, a2) =
           await EncryptionHelper.DecryptAsync(Configuration.EncryptionOptions.EncryptionKey, jsonStream as FileStream);
-        source = await JsonSerializer.DeserializeAsync(stream, GetType(),
-          ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
+        var streamReader = new StreamReader(stream);
+        json = await streamReader.ReadToEndAsync();
 
         stream.Close();
         stream.Dispose();
@@ -58,14 +59,19 @@ namespace Simple.Settings.Json
         s1.Dispose();
         a2.Clear();
         a2.Dispose();
+        streamReader.Close();
+        streamReader.Dispose();
 
         OnAfterDecrypt();
       }
+      
+      if (json is null)
+      {
+        var streamReader = new StreamReader(jsonStream);
+        json = await streamReader.ReadToEndAsync();
+      }
 
-      source ??= await JsonSerializer.DeserializeAsync(jsonStream, GetType(),
-        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
-
-      await Task.Run(() => CopyValues(this, source));
+      await Task.Factory.StartNew(() => JsonConvert.PopulateObject(json, this));
 
       OnAfterLoad();
     }

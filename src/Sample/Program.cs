@@ -74,7 +74,7 @@ namespace Sample
       #endregion
 
       // Load settings
-      //setting.Load(Path);
+      // setting.Load(Path);
       await setting.LoadAsync(Path);
 
       // Read settings
@@ -87,7 +87,7 @@ namespace Sample
       setting.SomeString = "Some other value";
       
       //Reload settings
-      //setting.Reload();
+      // setting.Reload();
       await setting.ReloadAsync();
       
       setting.SomeComplexObject = new ComplexObject
@@ -103,7 +103,7 @@ namespace Sample
       };
       
       // Save settings
-      //setting.Save();
+      // setting.Save();
       await setting.SaveAsync();
     }
   }
