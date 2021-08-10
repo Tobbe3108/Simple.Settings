@@ -41,7 +41,7 @@ namespace Simple.Settings.Json
     {
       OnBeforeLoad();
 
-      object? source = null;
+      string json = string.Empty;
 
       if (Configuration.EncryptionOptions is not null)
       {
@@ -49,10 +49,9 @@ namespace Simple.Settings.Json
 
         var (stream, s1, a2) =
           await EncryptionHelper.DecryptAsync(Configuration.EncryptionOptions.EncryptionKey, jsonStream as FileStream);
-
+        
         var streamReader = new StreamReader(stream);
-        source = await Task.Run(async () => JsonConvert.DeserializeObject(await streamReader.ReadToEndAsync(),
-          GetType(), ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings));
+        json = await streamReader.ReadToEndAsync();
 
         stream.Close();
         stream.Dispose();
@@ -66,18 +65,17 @@ namespace Simple.Settings.Json
         OnAfterDecrypt();
       }
 
-      if (source is null)
+      if (string.IsNullOrEmpty(json))
       {
         var streamReader = new StreamReader(jsonStream);
 
-        source ??= await Task.Run(async () => JsonConvert.DeserializeObject(await streamReader.ReadToEndAsync(),
-          GetType(), ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings));
+        json = await streamReader.ReadToEndAsync();
 
         streamReader.Close();
         streamReader.Dispose();
       }
-
-      await Task.Run(() => CopyValues(this, source));
+      
+      await Task.Run(()=> JsonConvert.PopulateObject(json, this, ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings));
 
       OnAfterLoad();
     }
