@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Simple.Settings.Json.Configuration;
 
 namespace Simple.Settings.Json
@@ -15,7 +15,7 @@ namespace Simple.Settings.Json
     {
       Configuration = new SimpleSettingsJsonConfiguration();
     }
-
+    
     private static void CopyValues<T>(T target, T source)
     {
       var properties = target?.GetType().GetProperties(

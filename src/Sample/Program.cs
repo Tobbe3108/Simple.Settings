@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Sample.Models;
 using Simple.Settings.Configuration;
+using Simple.Settings.Json;
 using Simple.Settings.Json.Configuration;
 
 namespace Sample
@@ -15,19 +16,22 @@ namespace Sample
 
     static async Task Main(string[] args)
     {
-      var setting = new SampleSettings().WithConfiguration(configuration =>
-      {
-        configuration.JsonSerializerOptions = new JsonSerializerOptions
-        {
-          WriteIndented = true
-        };
-        configuration.EncryptionOptions = new EncryptionOptions
-        {
-          EncryptionKey = "StrongEncryptionKey"
-        };
-      });
+       // var setting = new SampleSettings().WithConfiguration(configuration =>
+       // {
+       //   configuration.JsonSerializerSettings = new JsonSerializerSettings()
+       //   {
+       //      Formatting = Formatting.Indented,
+       //      DefaultValueHandling = DefaultValueHandling.Populate,
+       //      ContractResolver = new ShouldSerializeContractResolver(),
+       //      ObjectCreationHandling = ObjectCreationHandling.Replace
+       //   };
+       //   configuration.EncryptionOptions = new EncryptionOptions
+       //   {
+       //     EncryptionKey = "StrongEncryptionKey"
+       //   };
+       // });
 
-      //var setting = new SampleSettings();
+      var setting = new SampleSettings();
       
       #region Events
 

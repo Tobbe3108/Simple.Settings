@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Simple.Settings.Annotations;
 using Simple.Settings.Helpers;
 using Simple.Settings.Json.Configuration;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Simple.Settings.Json
 {
@@ -29,7 +28,7 @@ namespace Simple.Settings.Json
       {
         return;
       }
-      
+
       InternalLoad(FileInfo.FullName);
     }
 
@@ -42,23 +41,24 @@ namespace Simple.Settings.Json
     protected override void InternalSave(string path)
     {
       OnBeforeSave();
-      
-      var json = JsonSerializer.Serialize(this, GetType(), ((SimpleSettingsJsonConfiguration)Configuration).JsonSerializerOptions);
-      
+
+      var json = JsonConvert.SerializeObject(this, GetType(),
+        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings);
+
       if (Configuration.EncryptionOptions is not null)
       {
         OnBeforeEncrypt();
-        
+
         json.Encrypt(Configuration.EncryptionOptions.EncryptionKey, path);
-        
+
         OnAfterEncrypt();
         OnAfterSave();
-        
+
         return;
       }
-      
+
       File.WriteAllText(path, json);
-      
+
       OnAfterSave();
     }
 
@@ -67,15 +67,15 @@ namespace Simple.Settings.Json
     protected override void InternalLoad(string path)
     {
       OnBeforeLoad();
-      
+
       var json = string.Empty;
-      
+
       if (Configuration.EncryptionOptions is not null)
       {
         OnBeforeDecrypt();
-        
+
         json = EncryptionHelper.Decrypt(Configuration.EncryptionOptions.EncryptionKey, path);
-        
+
         OnAfterDecrypt();
       }
 
@@ -84,8 +84,9 @@ namespace Simple.Settings.Json
         json = File.ReadAllText(path);
       }
 
-      var source = JsonSerializer.Deserialize(json, GetType(),
-        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
+      var source = JsonConvert.DeserializeObject(json, GetType(),
+        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings);
+
       CopyValues(this, source);
 
       OnAfterLoad();

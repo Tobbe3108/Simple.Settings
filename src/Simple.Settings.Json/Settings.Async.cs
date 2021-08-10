@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Simple.Settings.Helpers;
 using Simple.Settings.Json.Configuration;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Simple.Settings.Json
 {
@@ -15,11 +15,11 @@ namespace Simple.Settings.Json
       {
         return;
       }
-      
+
       using var stream = new FileStream(FileInfo.FullName, FileMode.OpenOrCreate);
       await InternalLoadAsync(stream);
     }
-    
+
     public async Task ReloadAsync()
     {
       if (!FileInfo.Exists || FileInfo.Length == 0)
@@ -49,8 +49,10 @@ namespace Simple.Settings.Json
 
         var (stream, s1, a2) =
           await EncryptionHelper.DecryptAsync(Configuration.EncryptionOptions.EncryptionKey, jsonStream as FileStream);
-        source = await JsonSerializer.DeserializeAsync(stream, GetType(),
-          ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
+
+        var streamReader = new StreamReader(stream);
+        source = await Task.Run(async () => JsonConvert.DeserializeObject(await streamReader.ReadToEndAsync(),
+          GetType(), ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings));
 
         stream.Close();
         stream.Dispose();
@@ -58,52 +60,80 @@ namespace Simple.Settings.Json
         s1.Dispose();
         a2.Clear();
         a2.Dispose();
+        streamReader.Close();
+        streamReader.Dispose();
 
         OnAfterDecrypt();
       }
 
-      source ??= await JsonSerializer.DeserializeAsync(jsonStream, GetType(),
-        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
+      if (source is null)
+      {
+        var streamReader = new StreamReader(jsonStream);
+
+        source ??= await Task.Run(async () => JsonConvert.DeserializeObject(await streamReader.ReadToEndAsync(),
+          GetType(), ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings));
+
+        streamReader.Close();
+        streamReader.Dispose();
+      }
 
       await Task.Run(() => CopyValues(this, source));
 
       OnAfterLoad();
     }
 
-    protected override async Task InternalSaveAsync(Stream jsonStream)
+    protected override async Task InternalSaveAsync(FileStream fileStream)
     {
       OnBeforeSave();
+
+      var json = JsonConvert.SerializeObject(this, GetType(),
+        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerSettings);
 
       if (Configuration.EncryptionOptions is not null)
       {
         OnBeforeEncrypt();
-        
-        var (stream,s1,a2) = await EncryptionHelper.EncryptAsync(Configuration.EncryptionOptions.EncryptionKey, jsonStream as FileStream);
-        await JsonSerializer.SerializeAsync(stream, this, GetType(),
-          ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
-        
+
+
+        var (stream, s1, a2) =
+          await EncryptionHelper.EncryptAsync(Configuration.EncryptionOptions.EncryptionKey,
+            GenerateStreamFromString(json));
+
+        await stream.CopyToAsync(fileStream);
+
         stream.Close();
         stream.Dispose();
         s1.Close();
         s1.Dispose();
         a2.Clear();
         a2.Dispose();
-        
+
         OnAfterEncrypt();
         OnAfterSave();
-        
+
         return;
       }
-      
-      await JsonSerializer.SerializeAsync(jsonStream, this, GetType(),
-        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
-      
+
+      var streamWriter = new StreamWriter(fileStream);
+      await streamWriter.WriteAsync(json);
+      streamWriter.Close();
+      streamWriter.Dispose();
+
       OnAfterSave();
     }
 
     protected override async Task InternalReloadAsync(Stream jsonStream)
     {
       await InternalLoadAsync(jsonStream);
+    }
+
+    private static MemoryStream GenerateStreamFromString(string? s)
+    {
+      var stream = new MemoryStream();
+      var writer = new StreamWriter(stream);
+      writer.Write(s);
+      writer.Flush();
+      stream.Position = 0;
+      return stream;
     }
   }
 }

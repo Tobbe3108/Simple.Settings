@@ -20,7 +20,7 @@ namespace Simple.Settings
     protected abstract void InternalLoad(string path);
     protected abstract Task InternalLoadAsync(Stream jsonStream);
     protected abstract void InternalSave(string path);
-    protected abstract Task InternalSaveAsync(Stream jsonStream);
+    protected abstract Task InternalSaveAsync(FileStream fileStream);
     protected abstract void InternalReload(string path);
     protected abstract Task InternalReloadAsync(Stream jsonStream);
     

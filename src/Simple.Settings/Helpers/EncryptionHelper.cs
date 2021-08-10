@@ -47,17 +47,17 @@ namespace Simple.Settings.Helpers
       return decryptReader.ReadToEnd();
     }
 
-    public static async Task<(Stream, Stream, Aes)> EncryptAsync(string? privateKey, FileStream? fileStream)
+    public static async Task<(Stream, Stream, Aes)> EncryptAsync(string? privateKey, MemoryStream? memoryStream)
     {
       Aes aes = Aes.Create();
       aes.Key = CreateKey(privateKey);
       byte[] iv = aes.IV;
-      await fileStream.WriteAsync(iv, 0, iv.Length);
+      await memoryStream.WriteAsync(iv, 0, iv.Length);
       CryptoStream cryptoStream = new(
-        fileStream,
+        memoryStream,
         aes.CreateEncryptor(),
         CryptoStreamMode.Write);
-      return (cryptoStream, fileStream, aes);
+      return (cryptoStream, memoryStream, aes);
     }
 
     public static async Task<(Stream, Stream, Aes)> DecryptAsync(string? privateKey, FileStream? fileStream)

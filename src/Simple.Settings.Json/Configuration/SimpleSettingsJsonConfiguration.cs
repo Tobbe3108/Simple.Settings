@@ -1,13 +1,16 @@
-﻿using System.Text.Json;
+﻿using Newtonsoft.Json;
 using Simple.Settings.Configuration;
 
 namespace Simple.Settings.Json.Configuration
 {
   public class SimpleSettingsJsonConfiguration : ISimpleSettingsConfiguration
   {
-    public JsonSerializerOptions JsonSerializerOptions { get; set; } = new()
+    public JsonSerializerSettings JsonSerializerSettings { get; set; } = new()
     {
-      WriteIndented = true
+      Formatting = Formatting.Indented,
+      DefaultValueHandling = DefaultValueHandling.Populate,
+      ContractResolver = new ShouldSerializeContractResolver(),
+      ObjectCreationHandling = ObjectCreationHandling.Replace
     };
 
     public EncryptionOptions? EncryptionOptions { get; set; }
