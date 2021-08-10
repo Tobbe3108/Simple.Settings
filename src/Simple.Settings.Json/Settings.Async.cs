@@ -71,7 +71,8 @@ namespace Simple.Settings.Json
         json = await streamReader.ReadToEndAsync();
       }
 
-      await Task.Factory.StartNew(() => JsonConvert.PopulateObject(json, this));
+      var serializerSettings = new JsonSerializerSettings {ObjectCreationHandling = ObjectCreationHandling.Replace};
+      await Task.Factory.StartNew(() => JsonConvert.PopulateObject(json, this, serializerSettings));
 
       OnAfterLoad();
     }
