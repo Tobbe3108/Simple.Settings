@@ -83,9 +83,11 @@ namespace Simple.Settings.Json
       {
         json = File.ReadAllText(path);
       }
-     
-      JsonConvert.PopulateObject(json, this);
-      
+
+      var source = JsonSerializer.Deserialize(json, GetType(),
+        ((SimpleSettingsJsonConfiguration) Configuration).JsonSerializerOptions);
+      CopyValues(this, source);
+
       OnAfterLoad();
     }
   }

@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Simple.Settings.Json;
 
 namespace Sample.Models
 {
   public class SampleSettings : Settings
   {
+    [JsonIgnore] public ComplexObject SettingsService { get; set; } = null!;
+    
     public string SomeString { get; set; } = "Some value";
     
     public ComplexObject SomeComplexObject { get; set; } = new()
