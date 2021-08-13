@@ -8,9 +8,9 @@ namespace Simple.Settings.Json.Configuration
     public JsonSerializerSettings JsonSerializerSettings { get; set; } = new()
     {
       Formatting = Formatting.Indented,
-      DefaultValueHandling = DefaultValueHandling.Populate,
-      ContractResolver = new ShouldSerializeContractResolver(),
-      ObjectCreationHandling = ObjectCreationHandling.Replace
+      DefaultValueHandling = DefaultValueHandling.Include,
+      ObjectCreationHandling = ObjectCreationHandling.Replace,
+      ContractResolver = new ShouldSerializeContractResolver()
     };
 
     public EncryptionOptions? EncryptionOptions { get; set; }
